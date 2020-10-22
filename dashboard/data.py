@@ -90,7 +90,14 @@ class DashboardData:
     def done_cards(self):
         done_id = self.lists_by_name['Done'].id
         done_cards = self.cards_by_list_id[done_id]
-        sorted_cards = sorted(done_cards, key=lambda x: x.due)
+
+        def sort_cards(x):
+            if x.due:
+                return x.due
+            else:
+                return ''
+
+        sorted_cards = sorted(done_cards, key=sort_cards)
         return sorted_cards
 
     def ongoing_products(self):
