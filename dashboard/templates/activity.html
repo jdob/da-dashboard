@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Activities{% endblock %}
+{% block activity %}active{% endblock %}
+
+{% block content %}
+
+<table class="table table-sm table-striped">
+
+{% for label in cards.keys() %}
+    <thead class="thead-dark">
+        <th colspan="4">{{ label }}</th>
+    </thead>
+    <thead class="thead-light">
+        <th>Due Date</th>
+        <th>Name</th>
+        <th>Members</th>
+        <th>Description</th>
+    </thead>
+    <tbody>
+    {% for card in cards[label] %}
+        <tr>
+            <!-- Due Date -->
+            {% if card.due %}
+                {% if card.is_due_complete %}
+                    <td><strike>{{ card.real_due_date.strftime('%m-%d-%y') }}</strike></td>
+                {% else %}
+                    <td>{{ card.real_due_date.strftime('%m-%d-%y') }}</td>
+                {% endif %}
+            {% else %}
+                <td></td>
+            {% endif %}
+
+            <!-- Name -->
+            <td><a href="{{ card.short_url }}" target="_blank">{{ card.name }}</a></td>
+
+            <!-- Members -->
+            <td>
+                {% for name in card.member_names %}
+                {{ name }}<br/>
+                {% endfor %}
+            </td>
+
+            <!-- Description -->
+            <td><pre>{{ card.description }}</pre></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

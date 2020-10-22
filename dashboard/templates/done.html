@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Completed{% endblock %}
+{% block done %}active{% endblock %}
+
+{% block content %}
+
+<table class="table table-sm table-striped">
+
+    <thead class="thead-light">
+        <th>Name</th>
+        <th>Members</th>
+        <th>Description</th>
+    </thead>
+    <tbody>
+    {% for card in cards %}
+    <tr>
+        <!-- Name -->
+        <td><a href="{{ card.short_url }}" target="_blank">{{ card.name }}</a></td>
+
+        <!-- Members -->
+        <td>
+            {% for name in card.member_names %}
+                {{ name }}<br/>
+            {% endfor %}
+        </td>
+
+        <!-- Description -->
+        <td><pre>{{ card.description }}</pre></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
