@@ -3,8 +3,8 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="navbar-brand" href="#">Dashboard</div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="navbar-brand abs" href="#">Developer Advocates</div>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -19,6 +19,9 @@
       <li class="nav-item">
         <a class="nav-link {% block activity %}{% endblock %}" href="/activity">Activities</a>
       </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li><a class="nav-link" href="https://trello.com/b/0caYY0NZ/developer-advocates">Trello Board</a></li>
     </ul>
   </div>
 </nav>
