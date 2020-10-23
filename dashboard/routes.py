@@ -16,7 +16,7 @@ ENV_TOKEN = 'TOKEN'
 def in_progress():
     dd = _load_data()
     in_progress_cards = dd.in_progress_cards()
-    return render_template('index.html', cards=in_progress_cards)
+    return render_template('in_progress.html', cards=in_progress_cards)
 
 
 @app.route('/done', methods=('GET',))
