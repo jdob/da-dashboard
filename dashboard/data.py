@@ -90,6 +90,16 @@ class DashboardData:
     def in_progress_cards(self):
         in_progress_id = self.lists_by_name[LIST_IN_PROGRESS].id
         in_progress_cards = self.cards_by_list_id[in_progress_id]
+
+        # Add a new "type" field that describes the type of task represented by
+        # the card. Since the knowledge of what a label represents is captured in the
+        # color, we do this here and then make the new list available to the UI.
+        for c in in_progress_cards:
+            card_types = []
+            if c.labels:
+                card_types = [l.name for l in c.labels if l.name in self.task_label_names]
+            c.types = card_types
+
         sorted_cards = sorted(in_progress_cards, key=sort_cards_by_due)
         return sorted_cards
 

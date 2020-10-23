@@ -4,10 +4,17 @@
 
 {% block content %}
 <table class="table table-sm table-striped">
-
+    <colgroup>
+        <col class="highlight">
+        <col>
+        <col class="highlight">
+        <col>
+        <col class="highlight">
+    </colgroup>
     <thead class="thead-light">
         <th>Due Date</th>
         <th>Name</th>
+        <th>Type</th>
         <th>Members</th>
         <th>Description</th>
     </thead>
@@ -27,6 +34,13 @@
 
         <!-- Name -->
         <td><a href="{{ card.short_url }}" target="_blank">{{ card.name }}</a></td>
+
+        <!-- Type -->
+        <td>
+            {% for t in card.types %}
+                {{t}}<br/>
+            {% endfor %}
+        </td>
 
         <!-- Members -->
         <td>
