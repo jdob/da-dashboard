@@ -11,6 +11,7 @@ COLOR_PRODUCT = None
 
 LIST_DONE = 'Done'
 LIST_IN_PROGRESS = 'In Progress'
+LIST_BACKLOG = 'Backlog'
 
 
 class DashboardData:
@@ -110,6 +111,19 @@ class DashboardData:
         done_cards = self.cards_by_list_id[done_id]
         add_card_types(done_cards, self.task_label_names)
         sorted_cards = sorted(done_cards, key=sort_cards_by_due)
+        return sorted_cards
+
+    def coming_soon_cards(self):
+        backlog_id = self.lists_by_name[LIST_BACKLOG].id
+        backlog_cards = self.cards_by_list_id[backlog_id]
+
+        # Filter out cards with no due date or those due in more than X many days
+        upcoming_date = datetime.datetime.now() + datetime.timedelta(days=21)
+        upcoming_cards = [c for c in backlog_cards if c.real_due_date and c.real_due_date < upcoming_date]
+
+        add_card_types(upcoming_cards, self.task_label_names)
+        sorted_cards = sorted(upcoming_cards, key=sort_cards_by_due)
+
         return sorted_cards
 
     def ongoing_products(self):

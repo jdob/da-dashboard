@@ -26,6 +26,13 @@ def done():
     return render_template('done.html', cards=done_cards)
 
 
+@app.route('/soon', methods=('GET',))
+def soon():
+    dd = _load_data()
+    soon_cards = dd.coming_soon_cards()
+    return render_template('soon.html', cards=soon_cards)
+
+
 @app.route('/activity', methods=('GET', ))
 def activity():
     dd = _load_data()
