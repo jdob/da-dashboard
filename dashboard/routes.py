@@ -13,8 +13,10 @@ ENV_TOKEN = 'TOKEN'
 
 
 @app.route('/', methods=('GET',))
-def homepage():
-    return render_template('index.html')
+def in_progress():
+    dd = _load_data()
+    in_progress_cards = dd.in_progress_cards()
+    return render_template('index.html', cards=in_progress_cards)
 
 
 @app.route('/done', methods=('GET',))

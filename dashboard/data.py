@@ -87,8 +87,13 @@ class DashboardData:
             # List breakdown
             self.cards_by_list_id.setdefault(card.list_id, []).append(card)
 
+    def in_progress_cards(self):
+        in_progress_id = self.lists_by_name[LIST_IN_PROGRESS].id
+        in_progress_cards = self.cards_by_list_id[in_progress_id]
+        return in_progress_cards
+
     def done_cards(self):
-        done_id = self.lists_by_name['Done'].id
+        done_id = self.lists_by_name[LIST_DONE].id
         done_cards = self.cards_by_list_id[done_id]
 
         def sort_cards(x):
