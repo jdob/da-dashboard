@@ -6,6 +6,7 @@
 <table class="table table-sm table-striped">
 
     <thead class="thead-light">
+        <th>Due Date</th>
         <th>Name</th>
         <th>Members</th>
         <th>Description</th>
@@ -13,6 +14,17 @@
     <tbody>
     {% for card in cards %}
     <tr>
+        <!-- Due Date -->
+        {% if card.due %}
+            {% if card.is_due_complete %}
+                <td><strike>{{ card.real_due_date.strftime('%m-%d-%y') }}</strike></td>
+            {% else %}
+                <td>{{ card.real_due_date.strftime('%m-%d-%y') }}</td>
+            {% endif %}
+        {% else %}
+            <td></td>
+        {% endif %}
+
         <!-- Name -->
         <td><a href="{{ card.short_url }}" target="_blank">{{ card.name }}</a></td>
 

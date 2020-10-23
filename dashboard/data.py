@@ -90,19 +90,13 @@ class DashboardData:
     def in_progress_cards(self):
         in_progress_id = self.lists_by_name[LIST_IN_PROGRESS].id
         in_progress_cards = self.cards_by_list_id[in_progress_id]
-        return in_progress_cards
+        sorted_cards = sorted(in_progress_cards, key=sort_cards_by_due)
+        return sorted_cards
 
     def done_cards(self):
         done_id = self.lists_by_name[LIST_DONE].id
         done_cards = self.cards_by_list_id[done_id]
-
-        def sort_cards(x):
-            if x.due:
-                return x.due
-            else:
-                return ''
-
-        sorted_cards = sorted(done_cards, key=sort_cards)
+        sorted_cards = sorted(done_cards, key=sort_cards_by_due)
         return sorted_cards
 
     def ongoing_products(self):
@@ -158,3 +152,10 @@ class DashboardData:
                     ongoing_by_label[label].append(card)
 
         return ongoing_by_label
+
+
+def sort_cards_by_due(x):
+    if x.due:
+        return x.due
+    else:
+        return ''
