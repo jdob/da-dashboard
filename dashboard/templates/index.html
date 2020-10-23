@@ -12,7 +12,7 @@
         <col class="highlight">
     </colgroup>
     <thead class="thead-light">
-        <th>Due Date</th>
+        <th>Due</th>
         <th>Name</th>
         <th>Type</th>
         <th>Members</th>
@@ -45,7 +45,7 @@
         <!-- Members -->
         <td>
             {% for name in card.member_names %}
-                {{ name }}<br/>
+                <span style="white-space: nowrap;">{{ name }}</span><br/>
             {% endfor %}
         </td>
 
