@@ -20,25 +20,10 @@
     <tbody>
     {% for card in cards %}
     <tr>
-        <!-- Name -->
-        <td><a href="{{ card.short_url }}" target="_blank">{{ card.name }}</a></td>
-
-        <!-- Type -->
-        <td>
-            {% for t in card.types %}
-                {{t}}<br/>
-            {% endfor %}
-        </td>
-
-        <!-- Members -->
-        <td>
-            {% for name in card.member_names %}
-                {{ name }}<br/>
-            {% endfor %}
-        </td>
-
-        <!-- Description -->
-        <td><pre>{{ card.description }}</pre></td>
+        {{ render_name(card) }}
+        {{ render_type(card) }}
+        {{ render_members(card) }}
+        {{ render_description(card) }}
     </tr>
     {% endfor %}
     </tbody>

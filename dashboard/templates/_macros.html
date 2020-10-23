@@ -1,0 +1,35 @@
+{% macro render_due_date(card) %}
+    {% if card.due %}
+        {% if card.is_due_complete %}
+            <td><strike>{{ card.real_due_date.strftime('%m-%d-%y') }}</strike></td>
+        {% else %}
+            <td>{{ card.real_due_date.strftime('%m-%d-%y') }}</td>
+        {% endif %}
+    {% else %}
+        <td></td>
+    {% endif %}
+{% endmacro %}
+
+{% macro render_name(card) %}
+    <td><a href="{{ card.short_url }}" target="_blank">{{ card.name }}</a></td>
+{% endmacro %}
+
+{% macro render_type(card) %}
+    <td>
+        {% for t in card.types %}
+            {{t}}<br/>
+        {% endfor %}
+    </td>
+{% endmacro %}
+
+{% macro render_members(card) %}
+    <td>
+        {% for name in card.member_names %}
+            <span style="white-space: nowrap;">{{ name }}</span><br/>
+        {% endfor %}
+    </td>
+{% endmacro %}
+
+{% macro render_description(card) %}
+    <td><pre>{{ card.description }}</pre></td>
+{% endmacro %}
