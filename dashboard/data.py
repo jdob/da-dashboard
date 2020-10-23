@@ -140,3 +140,21 @@ class DashboardData:
                     ongoing_by_label[label].append(card)
 
         return ongoing_by_label
+
+    def epics(self):
+        ongoing_list_ids = (
+            self.lists_by_name[LIST_DONE].id,
+            self.lists_by_name[LIST_IN_PROGRESS].id
+        )
+
+        ongoing_by_label = {}
+        for label, card_list in self.cards_by_label.items():
+            if (label not in self.epic_label_names):
+                continue
+
+            ongoing_by_label[label] = []
+            for card in card_list:
+                if (card.list_id in ongoing_list_ids):
+                    ongoing_by_label[label].append(card)
+
+        return ongoing_by_label

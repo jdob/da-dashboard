@@ -40,6 +40,13 @@ def products():
     return render_template('products.html', cards=cards_by_label)
 
 
+@app.route('/epics', methods=('GET',))
+def epics():
+    dd = _load_data()
+    cards_by_epic = dd.epics()
+    return render_template('epics.html', cards=cards_by_epic)
+
+
 def _load_data() -> DashboardData:
     # Load Trello credentials from environment and create client
     api_key = os.environ.get(ENV_API_KEY)
