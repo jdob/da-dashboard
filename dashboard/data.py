@@ -32,6 +32,7 @@ class DashboardData:
         self.list_names = None  # [str]
         self.lists_by_id = None  # {str: [List]}
         self.lists_by_name = None  # {str: [List]}
+        self.ongoing_list_ids = None  # [str]
 
         self.cards_by_list_id = {}  # {str: [Card]}
         self.cards_by_label = {}  # {str: [Card]}
@@ -67,6 +68,11 @@ class DashboardData:
         self.lists_by_id = {tlist.id: tlist for tlist in self.all_lists}
         self.lists_by_name = {tlist.name: tlist for tlist in self.all_lists}
 
+        self.ongoing_list_ids = (
+            self.lists_by_name[LIST_DONE].id,
+            self.lists_by_name[LIST_IN_PROGRESS].id
+        )
+
         # Organize cards
         for card in self.all_cards:
             # Rebuild date as a date object
@@ -94,11 +100,7 @@ class DashboardData:
         # Add a new "type" field that describes the type of task represented by
         # the card. Since the knowledge of what a label represents is captured in the
         # color, we do this here and then make the new list available to the UI.
-        for c in in_progress_cards:
-            card_types = []
-            if c.labels:
-                card_types = [l.name for l in c.labels if l.name in self.task_label_names]
-            c.types = card_types
+        add_card_types(in_progress_cards, self.task_label_names)
 
         sorted_cards = sorted(in_progress_cards, key=sort_cards_by_due)
         return sorted_cards
@@ -110,11 +112,6 @@ class DashboardData:
         return sorted_cards
 
     def ongoing_products(self):
-        ongoing_list_ids = (
-            self.lists_by_name[LIST_DONE].id,
-            self.lists_by_name[LIST_IN_PROGRESS].id
-        )
-
         ongoing_by_label = {}
         for label, card_list in self.cards_by_label.items():
             if (label not in self.product_label_names):
@@ -122,17 +119,12 @@ class DashboardData:
 
             ongoing_by_label[label] = []
             for card in card_list:
-                if (card.list_id in ongoing_list_ids):
+                if (card.list_id in self.ongoing_list_ids):
                     ongoing_by_label[label].append(card)
 
         return ongoing_by_label
 
     def ongoing_activities(self):
-        ongoing_list_ids = (
-            self.lists_by_name[LIST_DONE].id,
-            self.lists_by_name[LIST_IN_PROGRESS].id
-        )
-
         ongoing_by_label = {}
         for label, card_list in self.cards_by_label.items():
             if (label not in self.task_label_names):
@@ -140,17 +132,12 @@ class DashboardData:
 
             ongoing_by_label[label] = []
             for card in card_list:
-                if (card.list_id in ongoing_list_ids):
+                if (card.list_id in self.ongoing_list_ids):
                     ongoing_by_label[label].append(card)
 
         return ongoing_by_label
 
     def epics(self):
-        ongoing_list_ids = (
-            self.lists_by_name[LIST_DONE].id,
-            self.lists_by_name[LIST_IN_PROGRESS].id
-        )
-
         ongoing_by_label = {}
         for label, card_list in self.cards_by_label.items():
             if (label not in self.epic_label_names):
@@ -158,14 +145,28 @@ class DashboardData:
 
             ongoing_by_label[label] = []
             for card in card_list:
-                if (card.list_id in ongoing_list_ids):
+                if (card.list_id in self.ongoing_list_ids):
                     ongoing_by_label[label].append(card)
 
         return ongoing_by_label
 
 
-def sort_cards_by_due(x):
-    if x.due:
-        return x.due
+def sort_cards_by_due(card):
+    """ Sorting key function for sorting a list of cards by their due date. """
+    if card.due:
+        return card.due
     else:
         return ''
+
+
+def add_card_types(card_list, accepted_labels):
+    """
+    Adds a new field named "type" to each card in the given list. The type will be a list
+    of all label names in that card that appear in the list of provided acceptable labels.
+    If the card has no labels or none match, the type field will be an empty list.
+    """
+    for c in card_list:
+        card_types = []
+        if c.labels:
+            card_types = [l.name for l in c.labels if l.name in accepted_labels]
+        c.types = card_types
