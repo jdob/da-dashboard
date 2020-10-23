@@ -3,7 +3,12 @@
 }
 
 a {
-    color: #440091;
+    color: #742cc5;
+}
+
+a:hover {
+    color: #2f045f;
+    text-decoration: none;
 }
 
 pre {
