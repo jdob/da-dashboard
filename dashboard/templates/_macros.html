@@ -17,7 +17,7 @@
 {% macro render_type(card) %}
     <td>
         {% for t in card.types %}
-            <span style="white-space: nowrap;">{{t}}</span><br/>
+            <span class="card-type card-type-{{ t|type_style }}">{{ t }}</span><br/>
         {% endfor %}
     </td>
 {% endmacro %}

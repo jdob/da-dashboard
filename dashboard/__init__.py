@@ -9,4 +9,7 @@ def create_app():
         # Load all inbound routes
         from . import routes
 
+        # Load all filters
+        from . import filters
+
     return app

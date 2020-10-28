@@ -17,5 +17,33 @@ pre {
 }
 
 colgroup col.highlight {
+    background-color: #efefef;
+}
+
+.card-type {
+    white-space: nowrap;
+    border: 1px solid #bbbbbb;
     background-color: #eeeeee;
+    padding: 1px;
+    border-radius: 5px;
+}
+
+.card-type-blog-video-article, .card-type-book-content, .card-type-live-stream {
+    background-color: #cdccff;
+    border-color: #b9b7ff;
+}
+
+.card-type-conference-talk, .card-type-conference-workshop, .card-type-booth-duty-assets {
+    background-color: #e9d4ff;
+    border-color: #dab7ff;
+}
+
+.card-type-customer-engagement {
+    background-color: #ffd8c5;
+    border-color: #ffe2d4;
+}
+
+.card-type-rhpds-workshop, .card-type-scenario-content, .card-type-scenario-metrics {
+    background-color: #e1ffde;
+    border-color: #d8ffd4;
 }
