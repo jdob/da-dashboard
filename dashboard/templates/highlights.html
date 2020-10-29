@@ -1,0 +1,27 @@
+{% extends '_base.html' %}
+{% block title %}Monthly Highlights{% endblock %}
+{% block month %}active{% endblock %}
+
+{% block content %}
+<table class="table table-sm table-striped">
+    <colgroup>
+        <col class="highlight">
+        <col>
+        <col class="highlight">
+    </colgroup>
+    <thead class="thead-light">
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+    </thead>
+    <tbody>
+    {% for card in cards %}
+    <tr>
+        {{ render_name(card) }}
+        {{ render_type(card) }}
+        {{ render_description(card) }}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

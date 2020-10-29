@@ -50,8 +50,8 @@ class DashboardData:
         # Live network calls
         self.board = client.get_board(BOARD_ID)
         self.all_labels = self.board.get_labels()
-        self.all_cards = self.board.all_cards()
-        self.all_lists = self.board.all_lists()
+        self.all_cards = self.board.open_cards()
+        self.all_lists = self.board.open_lists()
         self.all_members = self.board.all_members()
 
         # Organize labels
@@ -87,6 +87,12 @@ class DashboardData:
 
             # Label breakdown
             if card.labels:
+
+                # In most cases, any cards with multiple labels will only have one per type
+                # (i.e. epic, activity, product, etc). In case they do cover multiple, sort them
+                # alphabetically for consistency.
+                card.labels.sort(key=lambda x: x.name)
+
                 for label in card.labels:
                     mapping = self.cards_by_label.setdefault(label.name, [])
                     mapping.append(card)
@@ -127,40 +133,43 @@ class DashboardData:
         return sorted_cards
 
     def ongoing_products(self):
-        ongoing_by_label = {}
-        for label, card_list in self.cards_by_label.items():
-            if (label not in self.product_label_names):
-                continue
-
-            ongoing_by_label[label] = []
-            for card in card_list:
-                if (card.list_id in self.ongoing_list_ids):
-                    ongoing_by_label[label].append(card)
-
-        return ongoing_by_label
+        return self._ongoing_label_filter(self.product_label_names)
 
     def ongoing_activities(self):
-        ongoing_by_label = {}
-        for label, card_list in self.cards_by_label.items():
-            if (label not in self.task_label_names):
-                continue
-
-            ongoing_by_label[label] = []
-            for card in card_list:
-                if (card.list_id in self.ongoing_list_ids):
-                    ongoing_by_label[label].append(card)
-
-        return ongoing_by_label
+        return self._ongoing_label_filter(self.task_label_names)
 
     def epics(self):
+        return self._ongoing_label_filter(self.epic_label_names)
+
+    def month_list(self):
+        """ Returns a tuple of [name, id] for all monthly highlights lists """
+        monthly_list = []
+        for l in self.all_lists:
+            if l.name.startswith('Highlights'):
+                name = l.name[len('Highlights - '):]
+                monthly_list.append([name, l.id])
+        return monthly_list
+
+    def month_highlights(self, list_id):
+        """
+        Reads the cards in the given list, returning the data formatted for the
+        highlights page.
+        """
+        trello_list = self.lists_by_id[list_id]
+        cards = trello_list.list_cards()
+        add_card_types(cards, self.task_label_names)
+        cards.sort(key=sort_cards_by_type)
+        return cards
+
+    def _ongoing_label_filter(self, label_list):
         ongoing_by_label = {}
         for label, card_list in self.cards_by_label.items():
-            if (label not in self.epic_label_names):
+            if label not in label_list:
                 continue
 
             ongoing_by_label[label] = []
             for card in card_list:
-                if (card.list_id in self.ongoing_list_ids):
+                if card.list_id in self.ongoing_list_ids:
                     ongoing_by_label[label].append(card)
 
         return ongoing_by_label
@@ -170,6 +179,14 @@ def sort_cards_by_due(card):
     """ Sorting key function for sorting a list of cards by their due date. """
     if card.due:
         return card.due
+    else:
+        return ''
+
+
+def sort_cards_by_type(card):
+    """ Sorting key function for card types (as added by add_card_types) """
+    if len(card.types) > 0:
+        return card.types[0]
     else:
         return ''
 

@@ -1,7 +1,7 @@
 import os
 
 from flask import current_app as app
-from flask import render_template
+from flask import render_template, request
 from trello import TrelloClient
 
 from .data import DashboardData
@@ -52,6 +52,19 @@ def epics():
     dd = _load_data()
     cards_by_epic = dd.epics()
     return render_template('epics.html', cards=cards_by_epic)
+
+
+@app.route('/month', methods=('GET',))
+def month():
+    dd = _load_data()
+
+    month_list_id = request.args.get('month', None)
+    if month_list_id:
+        cards = dd.month_highlights(month_list_id)
+        return render_template('highlights.html', cards=cards)
+    else:
+        month_list = dd.month_list()
+        return render_template('month_list.html', months=month_list)
 
 
 def _load_data() -> DashboardData:
