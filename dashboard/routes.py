@@ -61,7 +61,10 @@ def month():
     month_list_id = request.args.get('month', None)
     if month_list_id:
         cards = dd.month_highlights(month_list_id)
-        return render_template('highlights.html', cards=cards)
+        if request.args.get('text', None):
+            return render_template('highlights_text.html', cards=cards)
+        else:
+            return render_template('highlights.html', cards=cards, list_id=month_list_id)
     else:
         month_list = dd.month_list()
         return render_template('month_list.html', months=month_list)
