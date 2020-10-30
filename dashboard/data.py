@@ -114,10 +114,14 @@ class DashboardData:
 
     def done_cards(self):
         done_id = self.lists_by_name[LIST_DONE].id
-        done_cards = self.cards_by_list_id[done_id]
-        add_card_types(done_cards, self.task_label_names)
-        sorted_cards = sorted(done_cards, key=sort_cards_by_due)
-        return sorted_cards
+
+        if done_id in self.cards_by_list_id:
+            done_cards = self.cards_by_list_id[done_id]
+            add_card_types(done_cards, self.task_label_names)
+            cards = sorted(done_cards, key=sort_cards_by_due)
+        else:
+            cards = []
+        return cards
 
     def coming_soon_cards(self):
         backlog_id = self.lists_by_name[LIST_BACKLOG].id
