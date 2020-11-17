@@ -89,6 +89,13 @@ def backlog_epics():
     return render_template('epics.html', cards=cards_by_epic)
 
 
+@app.route('/backlog-team', methods=('GET', ))
+def backlog_team():
+    dd = _load_data()
+    cards_by_member = dd.backlog_team()
+    return render_template('team.html', cards=cards_by_member)
+
+
 @app.route('/month', methods=('GET',))
 def month():
     dd = _load_data()

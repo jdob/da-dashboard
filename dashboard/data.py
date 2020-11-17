@@ -165,6 +165,7 @@ class DashboardData:
             for card in card_list:
                 if card.list_id in self.ongoing_list_ids:
                     filtered[member_name].append(card)
+            filtered[member_name].sort(key=sort_cards_by_due)
 
         return filtered
 
@@ -176,6 +177,17 @@ class DashboardData:
 
     def backlog_epics(self):
         return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.epic_label_names)
+
+    def backlog_team(self):
+        filtered = {}
+        for member_name, card_list in self.cards_by_member.items():
+            filtered[member_name] = []
+            for card in card_list:
+                if card.list_id in [self.lists_by_name[LIST_BACKLOG].id]:
+                    filtered[member_name].append(card)
+            filtered[member_name].sort(key=sort_cards_by_due)
+
+        return filtered
 
     def month_list(self):
         """ Returns a tuple of [name, id] for all monthly highlights lists """
