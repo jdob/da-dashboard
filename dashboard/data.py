@@ -112,6 +112,13 @@ class DashboardData:
         sorted_cards = sorted(in_progress_cards, key=sort_cards_by_due)
         return sorted_cards
 
+    def backlog_cards(self):
+        backlog_id = self.lists_by_name[LIST_BACKLOG].id
+        backlog_cards = self.cards_by_list_id[backlog_id]
+        add_card_types(backlog_cards, self.task_label_names)
+        sorted_cards = sorted(backlog_cards, key=sort_cards_by_due)
+        return sorted_cards
+
     def done_cards(self):
         done_id = self.lists_by_name[LIST_DONE].id
 
