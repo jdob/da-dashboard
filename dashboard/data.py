@@ -136,14 +136,14 @@ class DashboardData:
 
         return sorted_cards
 
-    def ongoing_products(self):
-        return self._ongoing_label_filter(self.product_label_names)
+    def in_progress_products(self):
+        return self._list_label_filter(self.ongoing_list_ids, self.product_label_names)
 
-    def ongoing_activities(self):
-        return self._ongoing_label_filter(self.task_label_names)
+    def in_progress_activities(self):
+        return self._list_label_filter(self.ongoing_list_ids, self.task_label_names)
 
-    def epics(self):
-        return self._ongoing_label_filter(self.epic_label_names)
+    def in_progress_epics(self):
+        return self._list_label_filter(self.ongoing_list_ids, self.epic_label_names)
 
     def month_list(self):
         """ Returns a tuple of [name, id] for all monthly highlights lists """
@@ -165,7 +165,7 @@ class DashboardData:
         cards.sort(key=sort_cards_by_type)
         return cards
 
-    def _ongoing_label_filter(self, label_list):
+    def _list_label_filter(self, id_list, label_list):
         ongoing_by_label = {}
         for label, card_list in self.cards_by_label.items():
             if label not in label_list:
@@ -173,7 +173,7 @@ class DashboardData:
 
             ongoing_by_label[label] = []
             for card in card_list:
-                if card.list_id in self.ongoing_list_ids:
+                if card.list_id in id_list:
                     ongoing_by_label[label].append(card)
 
         return ongoing_by_label

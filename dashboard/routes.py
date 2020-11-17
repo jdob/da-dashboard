@@ -33,24 +33,24 @@ def soon():
     return render_template('soon.html', cards=soon_cards)
 
 
-@app.route('/activity', methods=('GET', ))
+@app.route('/in-progress-activity', methods=('GET', ))
 def activity():
     dd = _load_data()
-    cards_by_label = dd.ongoing_activities()
+    cards_by_label = dd.in_progress_activities()
     return render_template('activity.html', cards=cards_by_label)
 
 
-@app.route('/products', methods=('GET', ))
+@app.route('/in-progress-products', methods=('GET', ))
 def products():
     dd = _load_data()
-    cards_by_label = dd.ongoing_products()
+    cards_by_label = dd.in_progress_products()
     return render_template('products.html', cards=cards_by_label)
 
 
-@app.route('/epics', methods=('GET',))
+@app.route('/in-progress-epics', methods=('GET',))
 def epics():
     dd = _load_data()
-    cards_by_epic = dd.epics()
+    cards_by_epic = dd.in_progress_epics()
     return render_template('epics.html', cards=cards_by_epic)
 
 
