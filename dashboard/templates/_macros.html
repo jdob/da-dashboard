@@ -32,6 +32,6 @@
 
 {% macro render_description(card) %}
 {% autoescape false %}
-    <td>{{ card.description | replace('\n', '<br/>') }}</td>
+    <td>{{ card.description | urlize(target='_blank') | replace('\n', '<br/>') }}</td>
 {% endautoescape %}
 {% endmacro %}
