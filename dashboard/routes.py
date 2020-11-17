@@ -54,6 +54,13 @@ def in_progress_epics():
     return render_template('epics.html', cards=cards_by_epic)
 
 
+@app.route('/in-progress-team', methods=('GET', ))
+def in_progress_team():
+    dd = _load_data()
+    cards_by_member = dd.in_progress_team()
+    return render_template('team.html', cards=cards_by_member)
+
+
 @app.route('/backlog', methods=('GET',))
 def backlog():
     dd = _load_data()

@@ -37,6 +37,7 @@ class DashboardData:
 
         self.cards_by_list_id = {}  # {str: [Card]}
         self.cards_by_label = {}  # {str: [Card]}
+        self.cards_by_member = {}  # {str: [Card]}
 
     def load(self, client: TrelloClient) -> None:
         """
@@ -83,7 +84,12 @@ class DashboardData:
                 card.real_due_date = None
 
             # Add in member names instead of IDs
-            card.member_names = [self.members_by_id[m_id].full_name for m_id in card.member_ids]
+            if card.member_ids:
+                card.member_names = [self.members_by_id[m_id].full_name for m_id in card.member_ids]
+
+                for member in card.member_names:
+                    mapping = self.cards_by_member.setdefault(member, [])
+                    mapping.append(card)
 
             # Label breakdown
             if card.labels:
@@ -152,6 +158,16 @@ class DashboardData:
     def in_progress_epics(self):
         return self._list_label_filter(self.ongoing_list_ids, self.epic_label_names)
 
+    def in_progress_team(self):
+        filtered = {}
+        for member_name, card_list in self.cards_by_member.items():
+            filtered[member_name] = []
+            for card in card_list:
+                if card.list_id in self.ongoing_list_ids:
+                    filtered[member_name].append(card)
+
+        return filtered
+
     def backlog_products(self):
         return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.product_label_names)
 
@@ -182,17 +198,17 @@ class DashboardData:
         return cards
 
     def _list_label_filter(self, id_list, label_list):
-        ongoing_by_label = {}
+        filtered = {}
         for label, card_list in self.cards_by_label.items():
             if label not in label_list:
                 continue
 
-            ongoing_by_label[label] = []
+            filtered[label] = []
             for card in card_list:
                 if card.list_id in id_list:
-                    ongoing_by_label[label].append(card)
+                    filtered[label].append(card)
 
-        return ongoing_by_label
+        return filtered
 
 
 def sort_cards_by_due(card):
