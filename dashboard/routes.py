@@ -34,23 +34,44 @@ def soon():
 
 
 @app.route('/in-progress-activity', methods=('GET', ))
-def activity():
+def in_progress_activity():
     dd = _load_data()
     cards_by_label = dd.in_progress_activities()
     return render_template('activity.html', cards=cards_by_label)
 
 
 @app.route('/in-progress-products', methods=('GET', ))
-def products():
+def in_progress_products():
     dd = _load_data()
     cards_by_label = dd.in_progress_products()
     return render_template('products.html', cards=cards_by_label)
 
 
 @app.route('/in-progress-epics', methods=('GET',))
-def epics():
+def in_progress_epics():
     dd = _load_data()
     cards_by_epic = dd.in_progress_epics()
+    return render_template('epics.html', cards=cards_by_epic)
+
+
+@app.route('/backlog-activity', methods=('GET', ))
+def backlog_activity():
+    dd = _load_data()
+    cards_by_label = dd.backlog_activities()
+    return render_template('activity.html', cards=cards_by_label)
+
+
+@app.route('/backlog-products', methods=('GET', ))
+def backlog_products():
+    dd = _load_data()
+    cards_by_label = dd.backlog_products()
+    return render_template('products.html', cards=cards_by_label)
+
+
+@app.route('/backlog-epics', methods=('GET',))
+def backlog_epics():
+    dd = _load_data()
+    cards_by_epic = dd.backlog_epics()
     return render_template('epics.html', cards=cards_by_epic)
 
 

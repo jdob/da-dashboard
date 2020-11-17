@@ -145,6 +145,15 @@ class DashboardData:
     def in_progress_epics(self):
         return self._list_label_filter(self.ongoing_list_ids, self.epic_label_names)
 
+    def backlog_products(self):
+        return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.product_label_names)
+
+    def backlog_activities(self):
+        return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.task_label_names)
+
+    def backlog_epics(self):
+        return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.epic_label_names)
+
     def month_list(self):
         """ Returns a tuple of [name, id] for all monthly highlights lists """
         monthly_list = []
