@@ -1,6 +1,6 @@
 <pre>
 {% for c in cards %}
-[{{ c.types[0] }}] {{ c.name }}{% if c.description %}
+* [{{ c.types[0] }}] {{ c.name }}{% if c.description %}
 {{ c.description }}{% endif %}
 {% endfor %}
 </pre>
