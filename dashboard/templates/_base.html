@@ -59,8 +59,16 @@
 <!--            <li class="nav-item">-->
 <!--                <span class="navbar-text">|</span>-->
 <!--            </li>-->
-            <li class="nav-item">
-                <a class="nav-link {% block month %}{% endblock %}" href="/month">Month Highlights</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Reports
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/month">Month Highlights</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/all-attendees">Attendance</a>
+                </div>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">

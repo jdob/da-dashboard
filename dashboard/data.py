@@ -219,9 +219,15 @@ class DashboardData:
         cards.sort(key=sort_cards_by_type)
         return cards
 
+    def customer_attendees(self):
+        labels = (LABEL_CUSTOMER, )
+        return self._process_attendees_list(labels)
+
     def all_attendees(self):
         labels = (LABEL_CONFERENCE_TALK, LABEL_CONFERENCE_WORKSHOP, LABEL_CUSTOMER, LABEL_LIVE_STREAM)
+        return self._process_attendees_list(labels)
 
+    def _process_attendees_list(self, labels):
         month_cards = {}
         month_data = {}
         for month_list_id in self.highlights_2021_list_ids:
