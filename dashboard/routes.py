@@ -103,6 +103,13 @@ def attendees():
     return render_template('attendees.html', cards=month_cards, data=month_data)
 
 
+@app.route('/customer-engagements', methods=('GET', ))
+def customer_engagements():
+    dd = _load_data()
+    month_cards, month_data = dd.customer_attendees()
+    return render_template('attendees.html', cards=month_cards, data=month_data)
+
+
 @app.route('/month', methods=('GET',))
 def month():
     dd = _load_data()
