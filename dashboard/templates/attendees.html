@@ -1,0 +1,41 @@
+{% extends '_base.html' %}
+{% block title %}Attendees{% endblock %}
+{% block attendees %}active{% endblock %}
+
+{% block content %}
+
+<table class="table table-sm table-striped">
+    <colgroup>
+        <col class="highlight">
+        <col>
+        <col class="highlight">
+        <col>
+    </colgroup>
+    {% for month_name, month_cards in cards.items() %}
+    <thead class="thead-dark">
+        <th colspan="4">{{ month_name }}</th>
+    </thead>
+    <thead class="thead-light">
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Attendance</th>
+    </thead>
+    <tbody>
+    {% for card in month_cards %}
+    <tr>
+        {{ render_name(card) }}
+        {{ render_type(card) }}
+        {{ render_description(card) }}
+        <td>{{ card.attendees }}</td>
+    </tr>
+    {% endfor %}
+
+    <tr>
+        <td colspan="4" style="text-align: right; font-weight: bold;">Total: {{ data[month_name]['attendees'] }}</td>
+    </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+{% endblock %}

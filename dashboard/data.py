@@ -13,6 +13,11 @@ LIST_DONE = 'Done'
 LIST_IN_PROGRESS = 'In Progress'
 LIST_BACKLOG = 'Backlog'
 
+LABEL_CONFERENCE_TALK = 'Conference Talk'
+LABEL_CONFERENCE_WORKSHOP = 'Conference Workshop'
+LABEL_CUSTOMER = 'Customer Engagement'
+LABEL_LIVE_STREAM = 'Live Stream'
+
 
 class DashboardData:
 
@@ -38,6 +43,8 @@ class DashboardData:
         self.cards_by_list_id = {}  # {str: [Card]}
         self.cards_by_label = {}  # {str: [Card]}
         self.cards_by_member = {}  # {str: [Card]}
+
+        self.highlights_2021_list_ids = None  # [str]
 
     def load(self, client: TrelloClient) -> None:
         """
@@ -74,6 +81,9 @@ class DashboardData:
             self.lists_by_name[LIST_DONE].id,
             self.lists_by_name[LIST_IN_PROGRESS].id
         )
+
+        self.highlights_2021_list_ids = [tlist.id for tlist in self.all_lists if
+                                         tlist.name.startswith('Highlights') and tlist.name.endswith('2021')]
 
         # Organize cards
         for card in self.all_cards:
@@ -208,6 +218,47 @@ class DashboardData:
         add_card_types(cards, self.task_label_names)
         cards.sort(key=sort_cards_by_type)
         return cards
+
+    def all_attendees(self):
+        labels = (LABEL_CONFERENCE_TALK, LABEL_CONFERENCE_WORKSHOP, LABEL_CUSTOMER, LABEL_LIVE_STREAM)
+
+        month_cards = {}
+        month_data = {}
+        for month_list_id in self.highlights_2021_list_ids:
+            # Parse month name out of the list name
+            month_list_name = self.lists_by_id[month_list_id].name
+            month_name = month_list_name.split(' ')[2]
+
+            # Initialize the month aggregate data
+            month_data[month_name] = {
+                'attendees': 0
+            }
+
+            # Get the relevant cards for the month
+            month_by_labels = self._list_label_filter([month_list_id], labels)
+            all_cards_for_month = []
+            for cards in month_by_labels.values():
+                all_cards_for_month += cards
+
+            # For each card, pull up the type information for simplicity
+            add_card_types(all_cards_for_month, labels)
+
+            # For each card, pull the attendees up to the top level for simplicity
+            for c in all_cards_for_month:
+                # Figure out the event attendance
+                c.attendees = 0  # default in case we don't have these values
+                if len(c.custom_fields) > 0:
+                    for field in c.custom_fields:
+                        if field.name == 'Attendees':
+                            c.attendees = int(field.value)
+
+                # Increment the monthly count
+                month_data[month_name]['attendees'] += c.attendees
+
+            # Store the results
+            month_cards[month_name] = all_cards_for_month
+
+        return month_cards, month_data
 
     def _list_label_filter(self, id_list, label_list):
         filtered = {}
