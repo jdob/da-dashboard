@@ -175,6 +175,7 @@ class DashboardData:
             for card in card_list:
                 if card.list_id in self.ongoing_list_ids:
                     filtered[member_name].append(card)
+            add_card_types(filtered[member_name], self.task_label_names)
             filtered[member_name].sort(key=sort_cards_by_due)
 
         return filtered
@@ -195,6 +196,7 @@ class DashboardData:
             for card in card_list:
                 if card.list_id in [self.lists_by_name[LIST_BACKLOG].id]:
                     filtered[member_name].append(card)
+            add_card_types(filtered[member_name], self.task_label_names)
             filtered[member_name].sort(key=sort_cards_by_due)
 
         return filtered
