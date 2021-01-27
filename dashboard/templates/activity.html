@@ -6,7 +6,7 @@
 
 <table class="table table-sm table-striped">
 
-{% for label in cards.keys() %}
+{% for label in cards.keys()|sort %}
     <thead class="thead-dark">
         <th colspan="4">{{ label }}</th>
     </thead>
