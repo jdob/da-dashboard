@@ -1,0 +1,34 @@
+{% extends '_base.html' %}
+
+{% block title %}Upcoming Events{% endblock %}
+{% block events %}active{% endblock %}
+
+{% block content %}
+<table class="table table-sm table-striped">
+    <colgroup>
+        <col class="highlight">
+        <col>
+        <col>
+        <col>
+        <col class="highlight">
+    </colgroup>
+    <thead class="thead-light">
+        <th>Due</th>
+        <th>Members</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Type</th>
+    </thead>
+    <tbody>
+    {% for card in cards %}
+    <tr>
+        {{ render_due_date(card) }}
+        {{ render_members(card) }}
+        {{ render_name(card) }}
+        {{ render_description(card) }}
+        {{ render_type(card) }}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

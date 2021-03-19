@@ -96,6 +96,13 @@ def backlog_team():
     return render_template('team.html', cards=cards_by_member)
 
 
+@app.route('/upcoming-events', methods=('GET', ))
+def upcoming_events():
+    dd = _load_data()
+    cards = dd.upcoming_events_cards()
+    return render_template('events.html', cards=cards)
+
+
 @app.route('/all-attendees', methods=('GET', ))
 def attendees():
     dd = _load_data()

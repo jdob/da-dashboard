@@ -69,6 +69,7 @@ class DashboardData:
         self.epic_label_names = [label.name for label in self.all_labels if label.color == COLOR_EPIC]
         self.task_label_names = [label.name for label in self.all_labels if label.color == COLOR_TASK]
         self.product_label_names = [label.name for label in self.all_labels if label.color == COLOR_PRODUCT]
+        self.event_label_names = [LABEL_CUSTOMER, LABEL_CONFERENCE_WORKSHOP, LABEL_CONFERENCE_TALK]
 
         # Organize members
         self.members_by_id = {m.id: m for m in self.all_members}
@@ -143,14 +144,28 @@ class DashboardData:
 
     def upcoming_events_cards(self):
         """
-        Cards: All from 'Scheduled Events' list
+        Cards: All from 'Scheduled Events' and 'In Progress' list
         Sort: Due Date
         Extra Fields: type
         """
-        event_list_id = self.lists_by_name[LIST_EVENTS].id
-        event_cards = self.cards_by_list_id[event_list_id]
-        add_card_types(event_cards, self.task_label_names)
-        sorted_cards = sorted(event_cards, key=sort_cards_by_due)
+
+        # Everything in the scheduled events list
+        all_cards = self.cards_by_list_id[self.lists_by_name[LIST_EVENTS].id]
+
+        # Event-related cards from the in progress list
+        in_progress_cards = self.cards_by_list_id[self.lists_by_name[LIST_IN_PROGRESS].id]
+        for c in in_progress_cards:
+            if not c.labels:
+                continue
+
+            print(c.labels)
+            for label_name in c.labels:
+                if label_name.name in self.event_label_names:
+                    all_cards.append(c)
+                    break
+
+        add_card_types(all_cards, self.event_label_names)
+        sorted_cards = sorted(all_cards, key=sort_cards_by_due)
         return sorted_cards
 
     def done_cards(self):
