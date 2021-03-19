@@ -241,7 +241,7 @@ class DashboardData:
         for member_name, card_list in self.cards_by_member.items():
             filtered[member_name] = []
             for card in card_list:
-                if card.list_id in [[self.lists_by_name[LIST_IN_PROGRESS].id]]:
+                if card.list_id in [self.lists_by_name[LIST_IN_PROGRESS].id]:
                     filtered[member_name].append(card)
             add_card_types(filtered[member_name], self.task_label_names)
             filtered[member_name].sort(key=sort_cards_by_due)
