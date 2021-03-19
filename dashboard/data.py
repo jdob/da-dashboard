@@ -12,6 +12,7 @@ COLOR_PRODUCT = None
 LIST_DONE = 'Done'
 LIST_IN_PROGRESS = 'In Progress'
 LIST_BACKLOG = 'Backlog'
+LIST_EVENTS = 'Scheduled Events'
 
 LABEL_CONFERENCE_TALK = 'Conference Talk'
 LABEL_CONFERENCE_WORKSHOP = 'Conference Workshop'
@@ -117,25 +118,47 @@ class DashboardData:
             self.cards_by_list_id.setdefault(card.list_id, []).append(card)
 
     def in_progress_cards(self):
+        """
+        Cards: All from 'In Progress' list
+        Sort: Due Date
+        Extra Fields: type
+        """
         in_progress_id = self.lists_by_name[LIST_IN_PROGRESS].id
         in_progress_cards = self.cards_by_list_id[in_progress_id]
-
-        # Add a new "type" field that describes the type of task represented by
-        # the card. Since the knowledge of what a label represents is captured in the
-        # color, we do this here and then make the new list available to the UI.
         add_card_types(in_progress_cards, self.task_label_names)
-
         sorted_cards = sorted(in_progress_cards, key=sort_cards_by_due)
         return sorted_cards
 
     def backlog_cards(self):
+        """
+        Cards: All from 'Backlog' list
+        Sort: Due Date
+        Extra Fields: type
+        """
         backlog_id = self.lists_by_name[LIST_BACKLOG].id
         backlog_cards = self.cards_by_list_id[backlog_id]
         add_card_types(backlog_cards, self.task_label_names)
         sorted_cards = sorted(backlog_cards, key=sort_cards_by_due)
         return sorted_cards
 
+    def upcoming_events_cards(self):
+        """
+        Cards: All from 'Scheduled Events' list
+        Sort: Due Date
+        Extra Fields: type
+        """
+        event_list_id = self.lists_by_name[LIST_EVENTS].id
+        event_cards = self.cards_by_list_id[event_list_id]
+        add_card_types(event_cards, self.task_label_names)
+        sorted_cards = sorted(event_cards, key=sort_cards_by_due)
+        return sorted_cards
+
     def done_cards(self):
+        """
+        Cards: All from the 'Done' list
+        Sort: Due Date
+        Extra Fields: type
+        """
         done_id = self.lists_by_name[LIST_DONE].id
 
         if done_id in self.cards_by_list_id:
@@ -147,12 +170,22 @@ class DashboardData:
         return cards
 
     def coming_soon_cards(self):
+        """
+        Cards: From 'Backlog' and 'Scheduled Events' with due dates in the next 21 days
+        Sort: Due Date
+        Extra Fields: type
+        """
         backlog_id = self.lists_by_name[LIST_BACKLOG].id
         backlog_cards = self.cards_by_list_id[backlog_id]
 
+        events_id = self.lists_by_name[LIST_EVENTS].id
+        events_cards = self.cards_by_list_id[events_id]
+
+        all_soon_cards = backlog_cards + events_cards
+
         # Filter out cards with no due date or those due in more than X many days
         upcoming_date = datetime.datetime.now() + datetime.timedelta(days=21)
-        upcoming_cards = [c for c in backlog_cards if c.real_due_date and c.real_due_date < upcoming_date]
+        upcoming_cards = [c for c in all_soon_cards if c.real_due_date and c.real_due_date < upcoming_date]
 
         add_card_types(upcoming_cards, self.task_label_names)
         sorted_cards = sorted(upcoming_cards, key=sort_cards_by_due)
@@ -160,20 +193,40 @@ class DashboardData:
         return sorted_cards
 
     def in_progress_products(self):
-        return self._list_label_filter(self.ongoing_list_ids, self.product_label_names)
+        """
+        Cards: [product labels, cards] for 'In Progress'
+        Sort: Due Date
+        Extra Fields: type
+        """
+        return self._list_label_filter([self.lists_by_name[LIST_IN_PROGRESS].id], self.product_label_names)
 
     def in_progress_activities(self):
-        return self._list_label_filter(self.ongoing_list_ids, self.task_label_names)
+        """
+        Cards: [task labels, cards] for 'In Progress'
+        Sort: Due Date
+        Extra Fields: type
+        """
+        return self._list_label_filter([self.lists_by_name[LIST_IN_PROGRESS].id], self.task_label_names)
 
     def in_progress_epics(self):
-        return self._list_label_filter(self.ongoing_list_ids, self.epic_label_names)
+        """
+        Cards: [epic labels, cards] for 'In Progress'
+        Sort: Due Date
+        Extra Fields: type
+        """
+        return self._list_label_filter([self.lists_by_name[LIST_IN_PROGRESS].id], self.epic_label_names)
 
     def in_progress_team(self):
+        """
+        Cards: [member name, cards] for 'In Progress'
+        Sort: Due Date
+        Extra Fields: type
+        """
         filtered = {}
         for member_name, card_list in self.cards_by_member.items():
             filtered[member_name] = []
             for card in card_list:
-                if card.list_id in self.ongoing_list_ids:
+                if card.list_id in [[self.lists_by_name[LIST_IN_PROGRESS].id]]:
                     filtered[member_name].append(card)
             add_card_types(filtered[member_name], self.task_label_names)
             filtered[member_name].sort(key=sort_cards_by_due)
@@ -181,15 +234,35 @@ class DashboardData:
         return filtered
 
     def backlog_products(self):
+        """
+        Cards: [product label, cards] for 'Backlog'
+        Sort: Due Date
+        Extra Fields: type
+        """
         return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.product_label_names)
 
     def backlog_activities(self):
+        """
+        Cards: [task label, cards] for 'Backlog'
+        Sort: Due Date
+        Extra Fields: type
+        """
         return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.task_label_names)
 
     def backlog_epics(self):
+        """
+        Cards: [epic label, cards] for 'Backlog'
+        Sort: Due Date
+        Extra Fields: type
+        """
         return self._list_label_filter([self.lists_by_name[LIST_BACKLOG].id], self.epic_label_names)
 
     def backlog_team(self):
+        """
+        Cards: [member name, cards] for 'Backlog'
+        Sort: Due Date
+        Extra Fields: type
+        """
         filtered = {}
         for member_name, card_list in self.cards_by_member.items():
             filtered[member_name] = []
@@ -212,8 +285,9 @@ class DashboardData:
 
     def month_highlights(self, list_id):
         """
-        Reads the cards in the given list, returning the data formatted for the
-        highlights page.
+        Cards: all cards from the given list
+        Sort: Type
+        Extra Fields: type
         """
         trello_list = self.lists_by_id[list_id]
         cards = trello_list.list_cards()
