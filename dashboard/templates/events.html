@@ -1,9 +1,9 @@
 {% extends '_base.html' %}
 
-{% block title %}Upcoming Events{% endblock %}
-{% block events %}active{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+
 <table class="table table-sm table-striped">
     <colgroup>
         <col class="highlight">
@@ -31,4 +31,5 @@
     {% endfor %}
     </tbody>
 </table>
+
 {% endblock %}

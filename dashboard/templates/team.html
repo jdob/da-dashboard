@@ -1,8 +1,9 @@
 {% extends '_base.html' %}
-{% block title %}Team{% endblock %}
-{% block team %}active{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+
 <table class="table table-sm table-striped">
 
 {% for label in cards.keys() %}
@@ -29,4 +30,5 @@
 {% endfor %}
 
 </table>
+
 {% endblock %}

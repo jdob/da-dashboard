@@ -1,6 +1,5 @@
 {% extends '_base.html' %}
-{% block title %}Monthly Highlights{% endblock %}
-{% block month %}active{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 
@@ -9,4 +8,5 @@
     <li><a href="/month?month={{ d[1] }}">{{ d[0] }}</a></li>
 {% endfor %}
 </ul>
+
 {% endblock %}

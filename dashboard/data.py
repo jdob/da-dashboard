@@ -308,7 +308,7 @@ class DashboardData:
         cards = trello_list.list_cards()
         add_card_types(cards, self.task_label_names)
         cards.sort(key=sort_cards_by_type)
-        return cards
+        return cards, trello_list.name
 
     def customer_attendees(self):
         labels = (LABEL_CUSTOMER, )
