@@ -33,6 +33,13 @@ def soon():
     return render_template('soon.html', cards=soon_cards, title='Cards Due Soon')
 
 
+@app.route('/blocked', methods=('GET',))
+def blocked():
+    dd = _load_data()
+    blocked_cards = dd.blocked_cards()
+    return render_template('in_progress.html', cards=blocked_cards, title='Blocked or Waiting Cards')
+
+
 @app.route('/in-progress-activity', methods=('GET', ))
 def in_progress_activity():
     dd = _load_data()

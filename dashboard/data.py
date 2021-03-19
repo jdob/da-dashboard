@@ -12,6 +12,7 @@ COLOR_PRODUCT = None
 LIST_DONE = 'Done'
 LIST_IN_PROGRESS = 'In Progress'
 LIST_BACKLOG = 'Backlog'
+LIST_BLOCKED = 'Blocked/Waiting'
 LIST_EVENTS = 'Scheduled Events'
 
 LABEL_CONFERENCE_TALK = 'Conference Talk'
@@ -140,6 +141,18 @@ class DashboardData:
         backlog_cards = self.cards_by_list_id[backlog_id]
         add_card_types(backlog_cards, self.task_label_names)
         sorted_cards = sorted(backlog_cards, key=sort_cards_by_due)
+        return sorted_cards
+
+    def blocked_cards(self):
+        """
+        Cards: All from the 'Blocked/Waiting' list
+        Sort: Due Date
+        Extra Fields: type
+        """
+        blocked_id = self.lists_by_name[LIST_BLOCKED].id
+        blocked_cards = self.cards_by_list_id[blocked_id]
+        add_card_types(blocked_cards, self.task_label_names)
+        sorted_cards = sorted(blocked_cards, key=sort_cards_by_due)
         return sorted_cards
 
     def upcoming_events_cards(self):
