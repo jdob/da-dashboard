@@ -317,11 +317,12 @@ class DashboardData:
         Extra Fields: type
         """
         trello_list = self.lists_by_id[list_id]
-        cards = trello_list.list_cards()
-        add_card_types(cards, self.task_label_names)
-        pull_up_custom_fields(cards)
-        cards.sort(key=sort_cards_by_type)
-        return cards, trello_list.name
+        cards_by_label = self._list_label_filter([list_id], self.task_label_names)
+        for card_list in cards_by_label.values():
+            add_card_types(card_list, self.task_label_names)
+            pull_up_custom_fields(card_list)
+
+        return cards_by_label, trello_list.name
 
     def customer_attendees(self):
         labels = (LABEL_CUSTOMER, )
@@ -380,6 +381,10 @@ class DashboardData:
             for card in card_list:
                 if card.list_id in id_list:
                     filtered[label].append(card)
+
+            # Remove the label if there were no matching cards found
+            if len(filtered[label]) == 0:
+                filtered.pop(label)
 
         return filtered
 

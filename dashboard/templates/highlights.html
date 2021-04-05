@@ -4,26 +4,28 @@
 {% block content %}
 
 <table class="table table-sm table-striped">
-    <colgroup>
-        <col class="highlight">
-        <col>
-        <col class="highlight">
-    </colgroup>
+
+{% for label in cards.keys()|sort %}
+    <thead class="thead-dark">
+        <th colspan="4">{{ label }}</th>
+    </thead>
     <thead class="thead-light">
         <th>Name</th>
-        <th>Type</th>
         <th>Description</th>
     </thead>
     <tbody>
-    {% for card in cards %}
-    <tr>
-        {{ render_name(card) }}
-        {{ render_type(card) }}
-        {{ render_description(card) }}
-    </tr>
+    {% for card in cards[label] %}
+        <tr>
+            {{ render_name(card) }}
+            {{ render_description(card) }}
+        </tr>
     {% endfor %}
     </tbody>
+
+{% endfor %}
+
 </table>
+
 <a href="/month?month={{ list_id }}&text=true">Text View</a>
 
 {% endblock %}

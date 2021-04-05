@@ -32,6 +32,14 @@
 
 {% macro render_description(card) %}
 {% autoescape false %}
-    <td>{{ card.description | urlize(target='_blank') | replace('\n', '<br/>') }}</td>
+    <td>
+        {{ card.description | urlize(target='_blank') | replace('\n', '<br/>') }}
+        {% if card.attendees %}
+        <br/>Attendees: {{ card.attendees}}
+        {% endif %}
+        {% if card.content_url %}
+        <br/>URL: {{ card.content_url }}
+        {% endif %}
+    </td>
 {% endautoescape %}
 {% endmacro %}
