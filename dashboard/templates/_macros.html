@@ -14,6 +14,11 @@
     <td><a href="{{ card.short_url }}" target="_blank">{{ card.name }}</a></td>
 {% endmacro %}
 
+{% macro render_name_no_url(card) %}
+    <td>{{ card.name }}</td>
+{% endmacro %}
+
+
 {% macro render_type(card) %}
     <td>
         {% for t in card.types %}

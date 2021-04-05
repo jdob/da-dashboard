@@ -16,7 +16,7 @@
     <tbody>
     {% for card in cards[label] %}
         <tr>
-            {{ render_name(card) }}
+            {{ render_name_no_url(card) }}
             {{ render_description(card) }}
         </tr>
     {% endfor %}
