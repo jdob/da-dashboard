@@ -130,11 +130,11 @@ def month():
 
     month_list_id = request.args.get('month', None)
     if month_list_id:
-        cards, list_name = dd.month_highlights(month_list_id)
+        cards, list_name, stats = dd.month_highlights(month_list_id)
         if request.args.get('text', None):
             return render_template('highlights_text.html', cards=cards)
         else:
-            return render_template('highlights.html', cards=cards, list_id=month_list_id, title=list_name)
+            return render_template('highlights.html', cards=cards, list_id=month_list_id, title=list_name, stats=stats)
     else:
         month_list = dd.month_list()
         return render_template('month_list.html', months=month_list, title='Monthly Highlights')

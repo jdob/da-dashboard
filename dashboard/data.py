@@ -19,6 +19,7 @@ LABEL_CONFERENCE_TALK = 'Conference Talk'
 LABEL_CONFERENCE_WORKSHOP = 'Conference Workshop'
 LABEL_CUSTOMER = 'Customer Engagement'
 LABEL_LIVE_STREAM = 'Live Stream'
+LABEL_CONTENT = 'Blog, Video, Article'
 
 
 class DashboardData:
@@ -318,11 +319,34 @@ class DashboardData:
         """
         trello_list = self.lists_by_id[list_id]
         cards_by_label = self._list_label_filter([list_id], self.task_label_names)
+
+        # Add extra data for each card
         for card_list in cards_by_label.values():
             add_card_types(card_list, self.task_label_names)
             pull_up_custom_fields(card_list)
 
-        return cards_by_label, trello_list.name
+        # Summarize monthly data
+        stats = {
+            'Event Attendance': 0,
+            'Customer Attendance': 0,
+        }
+
+        # Event Attendance
+        event_attendance_cards = \
+            cards_by_label.get(LABEL_CONFERENCE_TALK, []) +\
+            cards_by_label.get(LABEL_CONFERENCE_WORKSHOP, []) +\
+            cards_by_label.get(LABEL_LIVE_STREAM, [])
+
+        for card in event_attendance_cards:
+            if card.attendees:
+                stats['Event Attendance'] += card.attendees
+
+        # Customer Attendance
+        for card in cards_by_label.get(LABEL_CUSTOMER, []):
+            if card.attendees:
+                stats['Customer Attendance'] += card.attendees
+
+        return cards_by_label, trello_list.name, stats
 
     def customer_attendees(self):
         labels = (LABEL_CUSTOMER, )

@@ -3,9 +3,23 @@
 
 {% block content %}
 
+<table class="table table-striped w-auto">
+    <thead class="thead-dark">
+        <th colspan="2">Month in Review</th>
+    </thead>
+    <tbody>
+    {% for label, value in stats.items() %}
+    <tr>
+        <td>{{ label }}</td>
+        <td>{{ value}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 <table class="table table-sm table-striped">
 
-{% for label in cards.keys()|sort %}
+{% for label in cards.keys() | sort %}
     <thead class="thead-dark">
         <th colspan="4">{{ label }}</th>
     </thead>
@@ -26,6 +40,6 @@
 
 </table>
 
-<a href="/month?month={{ list_id }}&text=true">Text View</a>
+<!--<a href="/month?month={{ list_id }}&text=true">Text View</a>-->
 
 {% endblock %}
