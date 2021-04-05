@@ -171,7 +171,6 @@ class DashboardData:
             if not c.labels:
                 continue
 
-            print(c.labels)
             for label_name in c.labels:
                 if label_name.name in self.event_label_names:
                     all_cards.append(c)
