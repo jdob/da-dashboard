@@ -1,6 +1,8 @@
 <pre>
 {% for c in cards %}
 * [{{ c.types[0] }}] {{ c.name }}{% if c.description %}
+  {% if c.attendees %}Attendees: {{ c.attendees }}{% endif %}
+  {% if c.content_url %}URL: {{ c.content_url }}{% endif %}
 {{ c.description }}{% endif %}
 {% endfor %}
 </pre>

@@ -319,6 +319,7 @@ class DashboardData:
         trello_list = self.lists_by_id[list_id]
         cards = trello_list.list_cards()
         add_card_types(cards, self.task_label_names)
+        pull_up_custom_fields(cards)
         cards.sort(key=sort_cards_by_type)
         return cards, trello_list.name
 
@@ -410,3 +411,20 @@ def add_card_types(card_list, accepted_labels):
         if c.labels:
             card_types = [l.name for l in c.labels if l.name in accepted_labels]
         c.types = card_types
+
+
+def pull_up_custom_fields(card_list):
+    """
+    For each of the custom fields we use, pull them up to the card level for simplicity.
+    """
+    for c in card_list:
+        # Establish defaults
+        c.attendees = None
+        c.content_url = None
+
+        if len(c.custom_fields) > 0:
+            for field in c.custom_fields:
+                if field.name == 'Attendees':
+                    c.attendees = int(field.value)
+                elif field.name == 'URL':
+                    c.content_url = field.value
