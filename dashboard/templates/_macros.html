@@ -43,7 +43,7 @@
         <br/>Attendees: {{ card.attendees}}
         {% endif %}
         {% if card.content_url %}
-        <br/>URL: {{ card.content_url }}
+        <br/>URL: {{ card.content_url | urlize(target='_blank') }}
         {% endif %}
     </td>
 {% endautoescape %}
