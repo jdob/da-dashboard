@@ -16,11 +16,11 @@ LIST_BACKLOG = 'Backlog'
 LIST_BLOCKED = 'Blocked/Waiting'
 LIST_EVENTS = 'Scheduled Events'
 
+LABEL_CONTENT = 'Content'
 LABEL_CONFERENCE_TALK = 'Conference Talk'
 LABEL_CONFERENCE_WORKSHOP = 'Conference Workshop'
 LABEL_CUSTOMER = 'Customer Engagement'
 LABEL_LIVE_STREAM = 'Live Stream'
-LABEL_CONTENT = 'Blog, Video, Article'
 
 
 class DashboardData:
@@ -107,7 +107,7 @@ class DashboardData:
             self.lists_by_name[LIST_IN_PROGRESS].id
         )
 
-        self.highlights_2021_list_ids = [tlist.id for tlist in self.all_lists if
+        self.highlights_2021_list_ids = [tlist.id for tlist in self.archive_lists if
                                          tlist.name.startswith('Highlights') and tlist.name.endswith('2021')]
 
         # Organize cards
@@ -390,7 +390,7 @@ class DashboardData:
         month_data = {}
         for month_list_id in self.highlights_2021_list_ids:
             # Parse month name out of the list name
-            month_list_name = self.lists_by_id[month_list_id].name
+            month_list_name = self.archive_lists_by_id[month_list_id].name
             month_name = month_list_name.split(' ')[2]
 
             # Initialize the month aggregate data
@@ -399,7 +399,7 @@ class DashboardData:
             }
 
             # Get the relevant cards for the month
-            month_by_labels = self._list_label_filter([month_list_id], labels)
+            month_by_labels = self._list_label_filter([month_list_id], labels, label_cards=self.archive_cards_by_label)
             all_cards_for_month = []
             for cards in month_by_labels.values():
                 all_cards_for_month += cards
