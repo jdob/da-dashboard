@@ -16,9 +16,9 @@ LIST_BACKLOG = 'Backlog'
 LIST_BLOCKED = 'Blocked/Waiting'
 LIST_EVENTS = 'Scheduled Events'
 
-LABEL_CONTENT = 'Content'
 LABEL_CONFERENCE_TALK = 'Conference Talk'
 LABEL_CONFERENCE_WORKSHOP = 'Conference Workshop'
+LABEL_CONTENT = 'Content'
 LABEL_CUSTOMER = 'Customer Engagement'
 LABEL_LIVE_STREAM = 'Live Stream'
 
@@ -346,12 +346,14 @@ class DashboardData:
         Extra Fields: type
         """
         trello_list = self.archive_lists_by_id[list_id]
-        cards_by_label = self._list_label_filter([list_id], self.task_label_names,
+        highlight_label_names = self.task_label_names + self.epic_label_names
+
+        cards_by_label = self._list_label_filter([list_id], highlight_label_names,
                                                  label_cards=self.archive_cards_by_label)
 
         # Add extra data for each card
         for card_list in cards_by_label.values():
-            add_card_types(card_list, self.task_label_names)
+            add_card_types(card_list, highlight_label_names)
             pull_up_custom_fields(card_list)
 
         # Summarize monthly data
