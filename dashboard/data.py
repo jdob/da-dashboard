@@ -4,6 +4,7 @@ from trello.trelloclient import TrelloClient
 
 
 BOARD_ID = '5f7f61eda018ce481185be8f'
+ARCHIVES_ID = '60e4b0e00879a001f87ff95c'
 
 COLOR_EPIC = 'purple'
 COLOR_TASK = 'blue'
@@ -25,18 +26,22 @@ LABEL_CONTENT = 'Blog, Video, Article'
 class DashboardData:
 
     def __init__(self):
-        self.board = None
-        self.all_labels = None  # [Label]
-        self.all_cards = None  # [Card]
-        self.all_lists = None  # [TrelloList]
-        self.all_members = None  # [Member]
 
+        # Board Agnostic
         self.label_names = None  # [str]
         self.epic_label_names = None  # [str]
         self.task_label_names = None  # [str]
         self.product_label_names = None  # [str]
 
         self.members_by_id = {}  # [str: Member]
+
+        # Live Board
+        self.board = None
+
+        self.all_labels = None  # [Label]
+        self.all_cards = None  # [Card]
+        self.all_lists = None  # [TrelloList]
+        self.all_members = None  # [Member]
 
         self.list_names = None  # [str]
         self.lists_by_id = None  # {str: [List]}
@@ -46,6 +51,17 @@ class DashboardData:
         self.cards_by_list_id = {}  # {str: [Card]}
         self.cards_by_label = {}  # {str: [Card]}
         self.cards_by_member = {}  # {str: [Card]}
+
+        # Archive Board
+        self.archives = None
+
+        self.archive_lists = None  # [TrelloList]
+        self.archive_cards = None  # [Card]
+
+        self.archive_lists_by_id = {}  # {str: [List]}
+        self.archive_cards_by_list_id = {}  # {str: [List]}
+        self.archive_cards_by_label = {}  # {str: [List]}
+        self.archive_cards_by_member = {}  # {str: [List]}
 
         self.highlights_2021_list_ids = None  # [str]
 
@@ -65,6 +81,10 @@ class DashboardData:
         self.all_lists = self.board.open_lists()
         self.all_members = self.board.all_members()
 
+        self.archives = client.get_board(ARCHIVES_ID)
+        self.archive_lists = self.archives.open_lists()
+        self.archive_cards = self.archives.open_cards()
+
         # Organize labels
         self.label_names = [label.name for label in self.all_labels]
 
@@ -80,6 +100,7 @@ class DashboardData:
         self.list_names = [tlist.name for tlist in self.all_lists]
         self.lists_by_id = {tlist.id: tlist for tlist in self.all_lists}
         self.lists_by_name = {tlist.name: tlist for tlist in self.all_lists}
+        self.archive_lists_by_id = {tlist.id: tlist for tlist in self.archive_lists}
 
         self.ongoing_list_ids = (
             self.lists_by_name[LIST_DONE].id,
@@ -90,7 +111,7 @@ class DashboardData:
                                          tlist.name.startswith('Highlights') and tlist.name.endswith('2021')]
 
         # Organize cards
-        for card in self.all_cards:
+        def _process_card(card, member_cards, label_cards, list_cards):
             # Rebuild date as a date object
             if card.due:
                 card.real_due_date = datetime.datetime.strptime(card.due, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -102,7 +123,7 @@ class DashboardData:
                 card.member_names = [self.members_by_id[m_id].full_name for m_id in card.member_ids]
 
                 for member in card.member_names:
-                    mapping = self.cards_by_member.setdefault(member, [])
+                    mapping = member_cards.setdefault(member, [])
                     mapping.append(card)
 
             # Label breakdown
@@ -114,11 +135,18 @@ class DashboardData:
                 card.labels.sort(key=lambda x: x.name)
 
                 for label in card.labels:
-                    mapping = self.cards_by_label.setdefault(label.name, [])
+                    mapping = label_cards.setdefault(label.name, [])
                     mapping.append(card)
 
-            # List breakdown
-            self.cards_by_list_id.setdefault(card.list_id, []).append(card)
+            # List cache
+            list_cards.setdefault(card.list_id, []).append(card)
+
+        for card in self.all_cards:
+            _process_card(card, self.cards_by_member, self.cards_by_label, self.cards_by_list_id)
+
+        for card in self.archive_cards:
+            _process_card(card, self.archive_cards_by_member, self.archive_cards_by_label,
+                          self.archive_cards_by_list_id)
 
     def in_progress_cards(self):
         """
@@ -305,7 +333,7 @@ class DashboardData:
     def month_list(self):
         """ Returns a tuple of [name, id] for all monthly highlights lists """
         monthly_list = []
-        for l in self.all_lists:
+        for l in self.archive_lists:
             if l.name.startswith('Highlights'):
                 name = l.name[len('Highlights - '):]
                 monthly_list.append([name, l.id])
@@ -317,8 +345,9 @@ class DashboardData:
         Sort: Type
         Extra Fields: type
         """
-        trello_list = self.lists_by_id[list_id]
-        cards_by_label = self._list_label_filter([list_id], self.task_label_names)
+        trello_list = self.archive_lists_by_id[list_id]
+        cards_by_label = self._list_label_filter([list_id], self.task_label_names,
+                                                 label_cards=self.archive_cards_by_label)
 
         # Add extra data for each card
         for card_list in cards_by_label.values():
@@ -395,9 +424,11 @@ class DashboardData:
 
         return month_cards, month_data
 
-    def _list_label_filter(self, id_list, label_list):
+    def _list_label_filter(self, id_list, label_list, label_cards=None):
+        label_cards = label_cards or self.cards_by_label
+
         filtered = {}
-        for label, card_list in self.cards_by_label.items():
+        for label, card_list in label_cards.items():
             if label not in label_list:
                 continue
 
